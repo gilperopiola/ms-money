@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +19,19 @@ func GetTransactions(c *gin.Context) {
 	transaction := &Transaction{}
 
 	transactions, err := transaction.GetAll()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, transactions)
+}
+
+func GetWeekTransactions(c *gin.Context) {
+	transaction := &Transaction{Date: time.Now().AddDate(0, 0, -7)}
+
+	transactions, err := transaction.GetAllSince()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)

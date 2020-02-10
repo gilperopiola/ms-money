@@ -47,6 +47,28 @@ func (transaction *Transaction) GetAll() ([]*Transaction, error) {
 	return transactions, nil
 }
 
+func (transaction *Transaction) GetAllSince() ([]*Transaction, error) {
+	rows, err := db.DB.Query(`SELECT id, name, description, amount, date FROM transactions WHERE date > ? ORDER BY id ASC`, transaction.Date)
+	defer rows.Close()
+	if err != nil {
+		return []*Transaction{}, err
+	}
+
+	transactions := []*Transaction{}
+	for rows.Next() {
+		tempTransaction := &Transaction{}
+
+		err = rows.Scan(&tempTransaction.ID, &tempTransaction.Name, &tempTransaction.Description, &tempTransaction.Amount, &tempTransaction.Date)
+		if err != nil {
+			return []*Transaction{}, err
+		}
+
+		transactions = append(transactions, tempTransaction)
+	}
+
+	return transactions, nil
+}
+
 func (transaction *Transaction) Create() (*Transaction, error) {
 	result, err := db.DB.Exec("INSERT INTO transactions (name, description, amount, date) VALUES (?, ?, ?, ?)",
 		transaction.Name, transaction.Description, transaction.Amount, transaction.Date)
