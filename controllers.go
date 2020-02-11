@@ -41,6 +41,19 @@ func GetWeekTransactions(c *gin.Context) {
 	c.JSON(http.StatusOK, transactions)
 }
 
+func GetDayTransactions(c *gin.Context) {
+	transaction := &Transaction{Date: time.Now().AddDate(0, 0, -1)}
+
+	transactions, err := transaction.GetAllSince()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, transactions)
+}
+
 /* POST */
 
 func CreateTransaction(c *gin.Context) {

@@ -30,6 +30,7 @@ func (router *MyRouter) Setup() {
 		v1.GET("/Money", GetMoneyAmount)
 		v1.GET("/Transactions", GetTransactions)
 		v1.GET("/Transactions/Week", GetWeekTransactions)
+		v1.GET("/Transactions/Day", GetDayTransactions)
 
 		v1.POST("/Transaction", CreateTransaction)
 	}
