@@ -11,6 +11,7 @@ type Transaction struct {
 	Name        string
 	Description string
 	Amount      int
+	HadBefore   int
 	Date        time.Time
 }
 
@@ -26,7 +27,9 @@ func GetMoney() int {
 }
 
 func (transaction *Transaction) GetAll() ([]*Transaction, error) {
-	rows, err := db.DB.Query(`SELECT id, name, description, amount, date FROM transactions ORDER BY id ASC`)
+	money := GetMoney()
+
+	rows, err := db.DB.Query(`SELECT id, name, description, amount, date FROM transactions ORDER BY id DESC`)
 	defer rows.Close()
 	if err != nil {
 		return []*Transaction{}, err
@@ -40,6 +43,9 @@ func (transaction *Transaction) GetAll() ([]*Transaction, error) {
 		if err != nil {
 			return []*Transaction{}, err
 		}
+
+		tempTransaction.HadBefore = money - tempTransaction.Amount
+		money -= tempTransaction.Amount
 
 		transactions = append(transactions, tempTransaction)
 	}
