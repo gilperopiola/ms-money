@@ -77,7 +77,7 @@ func (transaction *Transaction) GetAllSince() ([]*Transaction, error) {
 
 func (transaction *Transaction) Create() (*Transaction, error) {
 	result, err := db.DB.Exec("INSERT INTO transactions (name, description, amount, date) VALUES (?, ?, ?, ?)",
-		transaction.Name, transaction.Description, transaction.Amount, transaction.Date)
+		transaction.Name, transaction.Description, transaction.Amount, time.Now())
 
 	if err != nil {
 		return &Transaction{}, err
